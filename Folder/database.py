@@ -8,7 +8,7 @@ import requests
 
 # 🤖 ដាក់ព័ត៌មាន Bot របស់អ្នកនៅទីនេះ
 TELEGRAM_BOT_TOKEN = "8837515158:AAG3XTYNKQhd9G9_AKpam8wUE-Axj3BsOoA"      # Bot Token ចេញពី @BotFather
-TELEGRAM_BOT_USERNAME = "@resetpasswordsys_bot" # Username Bot (ឧ. EVBike_Shop_bot) គ្មានសញ្ញា @
+TELEGRAM_BOT_USERNAME = "resetpasswordsys_bot" # Username Bot (ឧ. EVBike_Shop_bot) គ្មានសញ្ញា @
 
 # 1. បន្ថែម Column telegram_chat_id ទៅក្នុង Table Users
 def init_db():
