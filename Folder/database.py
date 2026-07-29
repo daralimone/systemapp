@@ -1,3 +1,5 @@
+from asyncio import open_connection
+
 import psycopg2
 import hashlib
 import os
@@ -10,7 +12,7 @@ TELEGRAM_BOT_USERNAME = "@resetpasswordsys_bot" # Username Bot (ឧ. EVBike_Shop
 
 # 1. បន្ថែម Column telegram_chat_id ទៅក្នុង Table Users
 def init_db():
-    conn = get_connection()
+    conn = open_connection()
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -31,7 +33,7 @@ def sync_telegram_connections():
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates"
         res = requests.get(url).json()
         if res.get("ok"):
-            conn = get_connection()
+            conn = open_connection()
             cursor = conn.cursor()
             for result in res.get("result", []):
                 msg = result.get("message", {})
@@ -58,7 +60,7 @@ def sync_telegram_connections():
 # 3. មុខងារផ្ញើ OTP ទៅកាន់ Telegram ផ្ទាល់ខ្លួនរបស់ User
 def send_otp_to_user(username, otp_code):
     sync_telegram_connections() # ធ្វើបច្ចុប្បន្នភាព Data ជាមុន
-    conn = get_connection()
+    conn = open_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT telegram_chat_id FROM users WHERE username = %s;", (username,))
     res = cursor.fetchone()
@@ -81,10 +83,13 @@ def send_otp_to_user(username, otp_code):
     except Exception as e:
         return False, f"កំហុស៖ {e}"
 
+def hash_password(password):
+    raise NotImplementedError
+
 # 4. មុខងារអាប់ដេត Password ថ្មី
 def reset_password_db(username, new_password):
     try:
-        conn = get_connection()
+        conn = open_connection()
         cursor = conn.cursor()
         hashed_pw = hash_password(new_password)
         cursor.execute("UPDATE users SET password = %s WHERE username = %s;", (hashed_pw, username))
